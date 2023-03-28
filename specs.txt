@@ -1,0 +1,42 @@
+CLIENT REQUESTS:
+
+GET /ID HTTP/1.1
+requests the id of the server
+GET /HIT HTTP/1.1
+$X,$Y
+sends a hit to x and y
+GET /UPD$Xx$Y HTTP/1.1
+asks for an update
+
+SERVER RESPONSES:
+/ID: 
+HTTP/1.1 200 OK
+$ID
+
+/HIT
+HTTP/1.1 200 OK
+$VAL
+
+VAL:
+N          : None yet
+M          : Miss
+H          : Hit
+S[(X,Y)..] : Sunk
+E          : Error try again
+
+
+CLIENT LOOP:
+ask for id
+
+if id = 0
+HIT
+UPD
+
+if id = 1
+UPD
+HIT
+
+SERVER:
+GLOBAL BOARD_A BOARD_B
+
+
