@@ -6,10 +6,6 @@ use std::{
     io::{BufReader, prelude::*}
 };
 
-use rand::random;
-#[allow(non_upper_case_globals)]
-static rand : fn() -> usize = random::<usize>;
-
 static mut PLAYER_ID_MUTEX : Mutex<usize> = Mutex::new(0);
 static mut PLAYER_ID       : usize = 0;
 
@@ -104,32 +100,10 @@ fn connection_manager(mut stream: TcpStream) {
     println!("connection dropped");
 }
 
-fn init_board(board: &mut game::Board){
-    let ships = vec![
-        (rand() % 6, rand() % 6, rand() % 1),
-        (rand() % 6, rand() % 6, rand() % 1),
-        (rand() % 6, rand() % 6, rand() % 1),
-    ];
-
-    for j in 0..3{
-        let mut x  = ships[j].0;
-        let mut y  = ships[j].1;
-        for _ in 0..(j + 2){
-            board.0[x][y] = game::Cell::Ship;
-            if ships[0].2 == 1{
-                x += 1;
-            }
-            else{
-                y += 1;
-            }
-        }
-    }
-}
-
 pub fn main() {
     unsafe{
-        init_board(&mut BOARDS[0]);
-        init_board(&mut BOARDS[1]);
+        BOARDS[0].init();
+        BOARDS[1].init();
     }
     let listener = TcpListener::bind("localhost:8080").unwrap();
 
