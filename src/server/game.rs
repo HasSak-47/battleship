@@ -5,8 +5,21 @@ fn rand(max: usize) -> usize {random::<usize>() % max}
 pub enum Cell {
     #[default]
     Empty,
+    Miss,
     Hit,
     Ship,
+}
+
+impl std::fmt::Display for Cell{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        use Cell::*;
+        write!(f, "{}", match self{
+            Empty => "E",
+            Miss  => "M",
+            Hit   => "H",
+            Ship  => "S",
+        })
+    }
 }
 
 #[derive(Default)]
@@ -49,5 +62,17 @@ impl Board{
                 }
             }
         }
+    }
+}
+
+impl std::fmt::Display for Board{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for c in &self.0{
+            write!(f, "/")?;
+            for r in c{
+                write!(f, "{}", r)?;
+            }
+        }
+        Ok(())
     }
 }
