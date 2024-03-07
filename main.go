@@ -12,30 +12,37 @@ var upgrader = websocket.Upgrader{
     WriteBufferSize: 1024,
 }
 
-func main() {
-    http.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
-        conn, _ := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
+type Player struct{
+	id int
+};
 
+type Gaem struct{
+	player_turn int
+	players int
+}
+ 
+func main() {
+	gaem := Gaem{player_turn:  0, players: 0};
+    http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+        conn, _ := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
+		id := gaem.players;
+		gaem.players += 1;
         for {
             // Read message from browser
-            msgType, msg, err := conn.ReadMessage()
+			var msg = []byte(fmt.Sprintf("SetId;%d", id));
+			conn.WriteMessage(websocket.TextMessage, msg);
+            _, msg, err := conn.ReadMessage()
             if err != nil {
                 return
             }
 
             // Print the message to the console
-            fmt.Printf("%s sent: %s\n", conn.RemoteAddr(), string(msg))
-
-            // Write message back to browser
-            if err = conn.WriteMessage(msgType, msg); err != nil {
-                return
-            }
+            // fmt.Printf("%s sent: %s\n", conn.RemoteAddr(), string(msg))
         }
     })
 
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        http.ServeFile(w, r, "websockets.html")
-    })
+    fs := http.FileServer(http.Dir("static/"))
+    http.Handle("/", http.StripPrefix("/", fs))
 
     http.ListenAndServe(":8080", nil)
 }
