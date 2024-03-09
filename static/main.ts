@@ -5,7 +5,7 @@ let socket = new WebSocket("ws://localhost:8080/ws");
 enum GaemLoop{
 	None,
     Start   = 0x00,
-    Hit     = 0x01,
+    Attack  = 0x01,
     Receive = 0x02,
     End     = 0x10,
 	Win     = 0x01,
@@ -28,10 +28,12 @@ class Gaem {
 		switch(this.loop){
 			case GaemLoop.Start:
 				this.id = parseInt(cols[1]);
-				this.loop = this.id == 0? GaemLoop.Receive : GaemLoop.Hit;
-			case GaemLoop.Hit:
+				this.loop = this.id != 0 ? GaemLoop.Receive : GaemLoop.Attack;
+				break;
+			case GaemLoop.Attack:
 				let x = this.attack();
-				socket.send(`Hit;${x[0]} ${x[1]}`);
+				let m = `Hit;${x[0]};${x[1]}`
+				send(m);
 				break;
 			case GaemLoop.Receive:
 				break;
@@ -44,18 +46,26 @@ class Gaem {
 		}
     }
 
+	rand_int(){
+		return Math.round( Math.random() * 10 )
+	}
+
 	attack() {
-		return [Math.random(), Math.random()]
+		return [this.rand_int(), this.rand_int()]
 	}
 }
-let gm = new Gaem();
+let gaem = new Gaem();
 socket.onopen = function () {
     socket.send("Ok");
 };
+
 socket.onmessage = function (e) {
-    gm.tick(e.data);
+    gaem.tick(e.data);
 }
 
-function send() {
-    socket.send(input.value);
+function send(data: string) {
+	console.log("sending:", data);
+    socket.send(data);
 }
+
+export {Gaem, gaem, send}
