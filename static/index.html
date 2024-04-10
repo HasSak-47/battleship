@@ -1,14 +1,27 @@
+{{ block "index" . }}
 <!DOCTYPE html>
 <head>
 	<title> Battleship </title>
 	<script src="htmx.min.js"></script>
-	<script src="main.js" type="module"></script>
 </head>
 <body>
-	<!-- websockets.html -->
-	<input id="input" type="text" />
-	<button hx-on:click="send()">Send</button>
-	<pre id="output"></pre>
-	<script>
-	</script>
+	{{ template "inner" . }}
 </body>
+{{ end }}
+
+{{ block "login" . }}
+<form hx-swap="outerHTML" hx-post="/login">
+	user: <input type="text"></input>
+	pass: <input type="text"></input>
+	<button type="submit"> login </button>
+</form>>
+{{ end }}
+
+{{ block "signin" . }}
+<form hx-swap="outerHTML" hx-post="/signin">
+	user : <input type="text"></input>
+	email: <input type="text"></input>
+	pass : <input type="text"></input>
+	<button type="submit"> sigin </button>
+</form>
+{{ end }}
