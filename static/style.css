@@ -1,0 +1,25 @@
+
+#enemy{
+	color: red;
+}
+
+#player{
+	color: blue;
+}
+
+#enemy, #player{
+	font-size: 20px;
+}
+
+#enemy, #player{
+	background-color: grey;
+	display: inline-block;
+}
+
+.game-data{
+	padding: 0px;
+	border: 1px solid black;
+	width: 30px;
+	height: 30px;
+	text-align: center;
+}
