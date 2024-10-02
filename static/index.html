@@ -2,26 +2,45 @@
 <!DOCTYPE html>
 <head>
 	<title> Battleship </title>
-	<script src="htmx.min.js"></script>
+	<script src="./htmx.min.js"></script>
+	<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-	{{ template "inner" . }}
+	<form id="play" hx-post="/play" hx-swap="outerHTML">
+		<input type="text" name="name" placeholder="Username">
+		<button type="submit">play</button>
+	</form>
 </body>
 {{ end }}
 
-{{ block "login" . }}
-<form hx-swap="outerHTML" hx-post="/login">
-	user: <input type="text"></input>
-	pass: <input type="text"></input>
-	<button type="submit"> login </button>
-</form>>
-{{ end }}
+{{ block "game" . }}
 
-{{ block "signin" . }}
-<form hx-swap="outerHTML" hx-post="/signin">
-	user : <input type="text"></input>
-	email: <input type="text"></input>
-	pass : <input type="text"></input>
-	<button type="submit"> sigin </button>
-</form>
+<div id="game">
+	<h1> Battleship </h1>
+	<h2> {{.Name}} </h2>
+	<div id="boards">
+		<div id="enemy">
+			{{ template "board" .Eboard }}
+		</div>
+	<br>
+		<div id="player">
+			{{ template "board" .Eboard }}
+		</div>
+	</div>
+	<input id="attack-pos" type="text" name="attack" placeholder="A1">
+	<button id="attack-bt" type="text" hx-swap="outerHTML" hx-target="game" hx-trigger>attack</button>
+</div>
+
+{{end}}
+
+{{ block "board" . }}
+<table>
+	{{ range .Rows }}
+	<tr class="game-row">
+		{{ range .Cells }}
+			<td class="game-data">{{.}}</td>
+		{{ end }}
+	</tr>
+	{{ end }}
+</table>
 {{ end }}
